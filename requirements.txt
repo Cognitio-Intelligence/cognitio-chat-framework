@@ -1,0 +1,38 @@
+# Django Cognitio Chat Framework Dependencies
+
+# Core Django framework
+Django>=4.2.0,<5.0.0
+django-cors-headers>=4.3.1
+django-extensions>=3.2.3
+
+# Django REST Framework
+djangorestframework>=3.14.0
+djangorestframework-simplejwt>=5.3.0
+
+# Database
+psycopg2-binary>=2.9.7  # PostgreSQL support (optional)
+
+# Environment and configuration
+python-dotenv>=1.0.0
+
+# Security
+cryptography>=41.0.0
+
+# Utilities
+requests>=2.31.0
+python-dateutil>=2.8.2
+
+# Development dependencies (optional)
+# Uncomment for development
+# black>=23.0.0
+# flake8>=6.0.0
+# pytest>=7.4.0
+# pytest-django>=4.5.0
+
+# Desktop packaging
+briefcase>=0.3.17
+
+# Additional packages for enhanced functionality
+Pillow>=10.0.0  # Image processing
+whitenoise>=6.5.0  # Static file serving
+gunicorn>=21.2.0  # Production WSGI server (for deployment)

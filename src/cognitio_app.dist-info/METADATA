@@ -1,0 +1,11 @@
+Metadata-Version: 2.1
+Briefcase-Version: 0.3.15
+Name: cognitio_app
+Formal-Name: WebLLM Chat
+App-ID: org.webllm.chat.cognitio-app
+Version: 1.0.0
+Home-page: https://github.com/webllm/webllm-chat
+Download-URL: https://github.com/webllm/webllm-chat
+Author: WebLLM Chat Team
+Author-email: team@webllm.chat
+Summary: Chat with local WebLLM models - privacy-first AI assistant
