@@ -43,23 +43,115 @@ The framework is designed for developers who want to create local AI chat applic
 
 ## 🏗️ Architecture
 
+The Cognitio Chat Framework follows a modern three-tier architecture with direct WebLLM integration for optimal performance and privacy.
+
+### System Overview
+
 ```
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   React Frontend│    │  Django Backend  │    │   WebLLM Model  │
-│   (TypeScript)  │◄──►│   (REST API)     │    │   (Local GPU)   │
-│                 │    │                  │    │                 │
-│ ┌─────────────┐ │    │ ┌──────────────┐ │    │ Available Models│
-│ │ WebLLM      │ │    │ │ Processing   │ │    │ • Llama-3.2-1B  │
-│ │ Service     │◄┼────┤ │ Monitor      │ │    │ • Llama-3.2-3B  │
-│ │             │ │    │ │              │ │    │ • Phi-3.5-mini  │
-│ └─────────────┘ │    │ └──────────────┘ │    │ • Qwen2.5       │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-                                │
-                       ┌────────▼────────┐
-                       │  SQLite Database │
-                       │  (Chat History)  │
-                       └─────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           DESKTOP APPLICATION                               │
+│                              (BeeWare/Briefcase)                            │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  ┌─────────────────────┐         ┌─────────────────────┐                    │
+│  │   FRONTEND LAYER    │   API   │   BACKEND LAYER     │                    │
+│  │   React + TypeScript│◄───────►│   Django REST API   │                    │
+│  │                     │  HTTP   │                     │                    │
+│  │ ┌─────────────────┐ │         │ ┌─────────────────┐ │                    │
+│  │ │ Chat Interface  │ │         │ │ Chat Management │ │                    │
+│  │ │ • Message UI    │ │         │ │ • Session API   │ │                    │
+│  │ │ • Model Switch  │ │         │ │ • Message Store │ │                    │
+│  │ │ • Streaming     │ │         │ │ • User Auth     │ │                    │
+│  │ └─────────────────┘ │         │ └─────────────────┘ │                    │
+│  │                     │         │                     │                    │
+│  │ ┌─────────────────┐ │         │ ┌─────────────────┐ │                    │
+│  │ │ WebLLM Service  │ │  Direct │ │ Processing      │ │                    │
+│  │ │ • Model Manager │◄┼─────────┤ │ Monitor         │ │                    │
+│  │ │ • Stream Handler│ │ Updates │ │ • Performance   │ │                    │
+│  │ │ • GPU Interface │ │         │ │ • Analytics     │ │                    │
+│  │ └─────────────────┘ │         │ │ • Logging       │ │                    │
+│  └─────────────────────┘         │ └─────────────────┘ │                    │
+│                                  │                     │                    │
+│                                  │ ┌─────────────────┐ │                    │
+│                                  │ │ SQLite Database │ │                    │
+│                                  │ │ • Chat Sessions │ │                    │
+│                                  │ │ • Message Store │ │                    │
+│                                  │ │ • User Prefs    │ │                    │
+│                                  │ │ • Performance   │ │                    │
+│                                  │ └─────────────────┘ │                    │
+│                                  └─────────────────────┘                    │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                 │
+                                 ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           LOCAL AI PROCESSING                               │
+│                              (WebLLM + WebGPU)                              │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐              │
+│  │ Llama Models    │  │ Phi Models      │  │ Qwen Models     │              │
+│  │ • 3.2-1B (Fast) │  │ • 3.5-mini      │  │ • 2.5-0.5B      │              │
+│  │ • 3.2-3B (High) │  │ • Instruct      │  │ • 2.5-1.5B      │              │
+│  └─────────────────┘  └─────────────────┘  └─────────────────┘              │
+│                                                                             │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │                      GPU ACCELERATION                               │    │
+│  │                   WebGPU (Cross-platform)                           │    │
+│  │                                                                     │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────────────────────┘
 ```
+
+### Component Responsibilities
+
+#### 🎨 Frontend Layer (React + TypeScript)
+- **Chat Interface**: Message display, input handling, streaming UI
+- **WebLLM Service**: Direct model communication, GPU interface
+- **State Management**: Chat sessions, model selection, UI state
+- **Real-time Updates**: Live streaming, progress indicators
+
+#### 🔧 Backend Layer (Django REST API)
+- **Session Management**: Chat session CRUD operations
+- **Message Storage**: Persistent chat history in SQLite
+- **Processing Monitor**: WebLLM performance tracking
+- **API Gateway**: RESTful endpoints for frontend communication
+- **Analytics**: Usage statistics and performance metrics
+
+#### 🤖 AI Processing Layer (WebLLM)
+- **Model Management**: Load, switch, and manage AI models
+- **GPU Acceleration**: WebGPU, CUDA, Metal optimization
+- **Streaming Engine**: Real-time response generation
+- **Memory Management**: Efficient model caching and switching
+
+### Security & Privacy Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    PRIVACY BOUNDARIES                       │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  ┌─────────────────────────────────────────────────────┐    │
+│  │              LOCAL PROCESSING ONLY                  │    │
+│  │                                                     │    │
+│  │  • No external API calls for AI processing          │    │
+│  │  • All data remains on user's device                │    │
+│  │  • No telemetry or usage tracking                   │    │
+│  │  • Offline-capable AI inference                     │    │
+│  │                                                     │    │
+│  └─────────────────────────────────────────────────────┘    │
+│                                                             │
+│  ┌─────────────────────────────────────────────────────┐    │
+│  │                DATA ENCRYPTION                      │    │
+│  │                                                     │    │
+│  │  • SQLite database encryption (optional)            │    │
+│  │  • In-memory processing only                        │    │
+│  │  • Secure model storage                             │    │
+│  │                                                     │    │
+│  └─────────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────┘
+```
+
+This architecture ensures maximum privacy, performance, and flexibility while maintaining a clean separation of concerns across all application layers.
 
 ## 🛠️ Tech Stack
 
@@ -93,8 +185,8 @@ The framework is designed for developers who want to create local AI chat applic
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/webllm/webllm-chat.git
-   cd webllm-chat
+   git clone https://github.com/Cognitio-Intelligence/cognitio-chat-framework.git
+   cd cognitio-chat-framework
    ```
 
 2. **Backend Setup**
@@ -104,7 +196,7 @@ The framework is designed for developers who want to create local AI chat applic
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    
    # Install dependencies
-   pip install -r requirements_backend.txt
+   pip install -r requirements.txt
    
    # Run migrations
    python manage.py migrate
@@ -118,10 +210,10 @@ The framework is designed for developers who want to create local AI chat applic
    cd src/cognitio_app/backend/frontend-src
    
    # Install dependencies
-   npm install
+   npm install --legacy peer deps
    
-   # Start development server
-   npm run dev
+   # Build frontend server
+   npm run build
    ```
 
 4. **Desktop App (Optional)**
@@ -144,10 +236,6 @@ The framework is designed for developers who want to create local AI chat applic
    ```bash
    # Terminal 1: Start Django backend
    python manage.py runserver
-   
-   # Terminal 2: Start React frontend
-   cd src/cognitio_app/backend/frontend-src
-   npm run dev
    ```
 
 2. **Desktop App**
@@ -316,20 +404,6 @@ def webllm_processing(request):
         })
 ```
 
-## 🧪 Testing
-
-```bash
-# Backend tests
-python manage.py test
-
-# Frontend tests
-cd src/cognitio_app/backend/frontend-src
-npm test
-
-# Desktop app testing
-briefcase dev
-```
-
 ## 📊 Performance Monitoring
 
 The framework includes built-in performance monitoring:
@@ -386,21 +460,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Django REST Framework](https://www.django-rest-framework.org/)
 - [React Documentation](https://react.dev/)
 
-
-## 🚀 What's New
-
-### Recent Updates
-- ✅ **Direct WebLLM Integration**: Removed bridge polling for better performance
-- ✅ **Real-time Model Switching**: Change models without restart
-- ✅ **Processing Analytics**: Backend monitoring of WebLLM performance
-- ✅ **Streaming Optimization**: Live chunk updates with minimal latency
-- ✅ **Error Handling**: Comprehensive error tracking and recovery
-
-### Performance Improvements
-- **Faster Initialization**: Models load on-demand
-- **Memory Optimization**: Efficient model switching
-- **Network Reduction**: Direct frontend-to-WebLLM communication
-- **Real-time Updates**: Live streaming without polling overhead
 
 ## Code Protection for Distribution
 
