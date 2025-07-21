@@ -2,7 +2,7 @@
 requires = ["briefcase>=0.3.17"]
 
 [tool.briefcase]
-project_name = "WebLLM Chat"
+project_name = "Cognitio Chat"
 webllm_models = [
     "Llama-3.2-1B-Instruct",
     "Llama-3.2-3B-Instruct",
@@ -13,10 +13,10 @@ webllm_models = [
 bundle = "org.webllm.chat"
 version = "1.0.0"
 description = "Local WebLLM chat application with Django backend and React frontend"
-author = "WebLLM Chat Team"
-author_email = "team@webllm.chat"
+author = "Cognitio Team"
+author_email = "ali.demir@cognitioi.com"
 license.file = "LICENSE"
-url = "https://github.com/webllm/webllm-chat"
+url = "https://github.com/Cognitio-Intelligence/cognitio-chat-framework"
 
 [tool.briefcase.app.cognitio_app]
 formal_name = "WebLLM Chat"
@@ -287,4 +287,4 @@ notarize = false
 # Update and versioning
 [tool.briefcase.update]
 check_for_updates = false
-update_url = "https://github.com/webllm/webllm-chat/releases/latest"
+update_url = "https://github.com/Cognitio-Intelligence/cognitio-chat-framework/releases/latest"
